@@ -49,9 +49,9 @@ airIndex1 <- rename(airIndex, "AirIndexScore" = "Value") #renaming variable
 MICAasthmaCount <- MICAasthmaCount %>%
   mutate(White = as.numeric(White)) %>%
   mutate(Black = as.numeric(Black)) %>%
-  mutate(AllRaces = as.numeric(AllRaces))
+  mutate(AllRaces = as.numeric(AllRaces)) #recoding race variables
 
-MICAasthmaCount <- drop_na(MICAasthmaCount)
+MICAasthmaCount <- drop_na(MICAasthmaCount) #dropping counties with suppressed race data
 
 MICAasthmaCount <- MICAasthmaCount %>%
   mutate("AllOtherRaces" = (AllRaces - White - Black)) #creating 'all other race' variable
@@ -70,7 +70,7 @@ asthmaFinalData <- left_join(MICAasthmaCount1, totalER1, by = c("County", "Race"
 asthmaFinalData <- left_join(asthmaFinalData, airIndex1, by = "County") #joining airIndex by 'County'
 asthmaFinalData <- subset(asthmaFinalData, select = c("County", "AirIndexScore", "TotalAsthmaCount", "TotalERVisits", "Race")) #keeping only needed variables
 
-asthmaFinalData <- asthmaFinalData[-c(103, 158, 173), ]
+asthmaFinalData <- asthmaFinalData[-c(103, 158, 173), ] #Removing three counties with 0 ER and 0 asthma visits
 
 asthmaFinalData$RaceNumber <-factor(asthmaFinalData$Race, levels = c("White", "Black", "AllOtherRaces"), labels = c(0, 1, 2)) #recoding race variable
 
